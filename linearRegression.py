@@ -1,14 +1,14 @@
 import numpy as np
 import time
 
-true_vector = np.array([1.0,2.0]) # Vector that we want to learn
+true_vector = np.array([1.0,2.0, 3.0]) # Vector that we want to learn
 d = len(true_vector)
 
 points = []
 
 for i in range(10000):
     x = np.random.rand(d)
-    y = true_vector.dot(x) + np.random.rand() # add a litle bit noise
+    y = true_vector.dot(x) + np.random.rand() / 10.0 # add a litle bit noise
     points.append((x,y))
 
 def F(w):
@@ -29,12 +29,19 @@ def gradientDescent(F, dF, d):
     w = np.zeros(d)
     eta = 0.01
     value = 0
+    
+    start = time.time() # start timer
 
     for t in range(1000):
         value = F(w)
         gradient = dF(w)
         w = w - eta * gradient
-        print('iteration {}: w = {} , F(w) = {}'.format(t,w,value))
+        #print('iteration {}: w = {} , F(w) = {}'.format(t,w,value))
+
+    stop = time.time() # stop timer
+    
+    print('Gradient Descent Results: w = {}, F(w) = {}, time = {}'.format(w, value, (stop-start)))
+    
 
 def stochasticGradientDescent(sF, sdF, d, n):
     numUpdates = 0
@@ -55,7 +62,8 @@ def stochasticGradientDescent(sF, sdF, d, n):
 
     stop = time.time() # stop timer
     
-    print('w = {}, F(w) = {}, time = {}'.format(w, value, (stop-start)))
+
+    print('Stochastic Gradient Descent Results: w = {}, F(w) = {}, time = {}'.format(w, value, (stop-start)))
 
 
 def normalEquation():
@@ -77,9 +85,11 @@ def normalEquation():
 
     stop = time.time() # stop timer
 
-    print('w = {}, F(w) = {}, time = {}'.format(w, F(w), (stop-start)))
+    print('Derivative of weights at the point found: {}'.format(dF(w)))
+
+    print('Normal Equation Results: w = {}, F(w) = {}, time = {}'.format(w, F(w), (stop-start)))
 
 
-#gradientDescent(F, dF, d)
 normalEquation()
+gradientDescent(F, dF, d)
 stochasticGradientDescent(sF, sdF, d, len(points))
